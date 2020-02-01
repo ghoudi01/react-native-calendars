@@ -7,14 +7,17 @@ export default function(theme={}) {
   const appStyle = {...defaultStyle, ...theme};
   return StyleSheet.create({
     header: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
+       
+      
       paddingLeft: 10,
-      paddingRight: 10,
+       
       marginTop: 6,
-      alignItems: 'center'
+      alignItems: 'flex-end'
     },
     monthText: {
+     
+    
+     
       fontSize: appStyle.textMonthFontSize,
       fontFamily: appStyle.textMonthFontFamily,
       fontWeight: appStyle.textMonthFontWeight,
