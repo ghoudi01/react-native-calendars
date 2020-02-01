@@ -48,6 +48,7 @@ class ExpandableCalendar extends Component {
     initialPosition: PropTypes.oneOf(_.values(POSITIONS)),
     /** an option to disable the pan gesture and disable the opening and closing of the calendar (initialPosition will persist)*/
     disablePan: PropTypes.bool,
+
     /** whether to hide the knob  */
     hideKnob: PropTypes.bool,
     /** source for the left arrow image */
@@ -57,7 +58,8 @@ class ExpandableCalendar extends Component {
     /** whether to have shadow/elevation for the calendar */
     allowShadow: PropTypes.bool,
     /** whether to disable the week scroll in closed position */
-    disableWeekScroll: PropTypes.bool
+    disableWeekScroll: PropTypes.bool,
+    currentPosition:PropTypes.oneOf(_.values(POSITIONS))
   }
 
   static defaultProps = {
@@ -123,6 +125,9 @@ class ExpandableCalendar extends Component {
     if (date !== prevProps.context.date) {
       // date was changed from AgendaList, arrows or scroll
       this.scrollToDate(date);
+    }
+    if(this.props.currentPosition!=prevProps.currentPosition){
+      this.openClose();
     }
   }
   
@@ -327,7 +332,20 @@ class ExpandableCalendar extends Component {
   
   /** Events */
 
+  openClose(){
+    setTimeout(() => { // to allows setDate to be completed
+      if (this.state.position === POSITIONS.OPEN) {
+        this.bounceToPosition(this.closedHeight);
+      }
+     else
+      
+        this.bounceToPosition(this.openHeight);
+     
+
+    }, 0);
+  }
   onPressArrowLeft = () => {
+    
     this.scrollPage(false);
   }
   onPressArrowRight = () => {
