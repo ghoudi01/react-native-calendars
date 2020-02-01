@@ -147,9 +147,7 @@ class CalendarHeader extends Component {
     return (
       <View style={this.props.style}>
         <View style={this.style.header}>
-          {leftArrow}
-          <View style={{flexDirection: 'row'}}>
-            <Text
+        <Text
               allowFontScaling={false}
               style={this.style.monthText}
               accessibilityRole='header'
@@ -157,9 +155,6 @@ class CalendarHeader extends Component {
             >
               {this.props.month.toString(this.props.monthFormat)}
             </Text>
-            {indicator}
-          </View>
-          {rightArrow}
         </View>
         {
           !this.props.hideDayNames &&
