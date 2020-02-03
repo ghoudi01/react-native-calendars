@@ -277,7 +277,7 @@ class ExpandableCalendar extends Component {
   /** Animated */
   
   bounceToPosition(toValue) {  
-    if (!this.props.disablePan) {  
+    
       const {deltaY} = this.state;
       const threshold = this.openHeight / 1.75;
 
@@ -297,7 +297,7 @@ class ExpandableCalendar extends Component {
       this.setPosition();
       this.closeHeader(isOpen);
       this.resetWeekCalendarOpacity(isOpen);
-    }
+     
   }
 
   onAnimatedFinished = ({finished}) => {
@@ -488,7 +488,7 @@ class ExpandableCalendar extends Component {
         <Animated.View 
           ref={e => {this.wrapper = e;}}
           style={{height: deltaY}} 
-          {...this.panResponder.panHandlers}
+          
         >
           <CalendarList
             testID="calendar"
