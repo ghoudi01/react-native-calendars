@@ -41,6 +41,6 @@
     "semver": "5.x.x",
     "shell-utils": "1.x.x"
   },
-    "files": ["lib"],
+    "files": ["lib"]
  
 }
