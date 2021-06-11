@@ -10,7 +10,10 @@
     "start": "react-native start",
     "ios": "react-native run-ios",
     "android": "react-native run-android",
-    "xcode": "open ios/CalendarsExample.xcworkspace/"
+    "xcode": "open ios/CalendarsExample.xcworkspace/",
+      "build": "echo DO WHAT YOU NEED TO BUILD",
+    "prepack": "[ ! -f .buildme ] || npm run build",
+    "preinstall": "[ ! -f .buildme ] || npm run build"
   },
   "repository": {
     "type": "git",
@@ -37,5 +40,7 @@
     "react-native-navigation": "^3.5.1",
     "semver": "5.x.x",
     "shell-utils": "1.x.x"
-  }
+  },
+    "files": ["lib"],
+ 
 }
