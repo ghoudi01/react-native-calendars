@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import React, {Component} from 'react';
-import {SectionList, Text} from 'react-native';
+import {Text,ScrollView,View} from 'react-native';
 import PropTypes from 'prop-types';
 import XDate from 'xdate';
 
@@ -11,17 +11,12 @@ import asCalendarConsumer from './asCalendarConsumer';
 const commons = require('./commons');
 const UPDATE_SOURCES = commons.UPDATE_SOURCES;
 
-/**
- * @description: AgendaList component
- * @extends: SectionList
- * @notes: Should be wraped in CalendarProvider component
- * @example: https://github.com/wix/react-native-calendars/blob/master/example/src/screens/expandableCalendar.js
- */
+ 
 class AgendaList extends Component {
   static displayName = 'AgendaList';
 
   static propTypes = {
-    ...SectionList.propTypes,
+    ...ScrollView.propTypes,
     /** day format in section title. Formatting values: http://arshaw.com/xdate/#Formatting */
     dayFormat: PropTypes.string,
     /** style passed to the section view */
@@ -98,9 +93,7 @@ class AgendaList extends Component {
   }
 
   onScroll = (event) => {
-    if (!this.didScroll) {
-      this.didScroll = true;
-    }
+     this.props.onScroll(event)
     _.invoke(this.props, 'onScroll', event);
   }
 
@@ -137,20 +130,15 @@ class AgendaList extends Component {
 
   render() {
     return (
-      <SectionList
+      <ScrollView
+
         {...this.props}
-        ref={this.list}
-        keyExtractor={this.keyExtractor}
-        showsVerticalScrollIndicator={false}
-        onViewableItemsChanged={this.onViewableItemsChanged}
-        viewabilityConfig={this.viewabilityConfig}
-        renderSectionHeader={this.renderSectionHeader}
+        
         onScroll={this.onScroll}
-        onMomentumScrollBegin={this.onMomentumScrollBegin}
-        onMomentumScrollEnd={this.onMomentumScrollEnd}
-        // onScrollToIndexFailed={(info) => { console.warn('onScrollToIndexFailed info: ', info); }}
-        // getItemLayout={this.getItemLayout} // onViewableItemsChanged is not updated when list scrolls!!!
-      />
+        >
+{this.props.sections.map(item=>this.props.renderItem(item))}
+<View style={{height:this.props.maxHight+40,}}/>
+        </ScrollView>
     );
   }
 
