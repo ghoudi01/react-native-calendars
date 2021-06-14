@@ -21,7 +21,7 @@ import Calendar from '../calendar';
 import asCalendarConsumer from './asCalendarConsumer';
 import WeekCalendar from './weekCalendar';
 import Week from './week';
-
+import AgendaList from "./agendaList"
 const commons = require('./commons');
 const UPDATE_SOURCES = commons.UPDATE_SOURCES;
 const POSITIONS = {
@@ -106,7 +106,9 @@ class ExpandableCalendar extends Component {
       deltaY: new Animated.Value(startHeight),
       headerDeltaY: new Animated.Value(props.initialPosition === POSITIONS.CLOSED ? 0 : -HEADER_HEIGHT),
       position: props.initialPosition,
-      screenReaderEnabled: false
+      screenReaderEnabled: false,
+      calendarHeight:new Animated.Value(0),
+      horizontal:false
     };
 
     AccessibilityInfo.isScreenReaderEnabled().then((screenReaderEnabled) => {
@@ -478,27 +480,48 @@ class ExpandableCalendar extends Component {
   }
 
   render() {
-    const {style, hideKnob, horizontal, allowShadow, theme, ...others} = this.props;
-    const {deltaY, position, screenReaderEnabled} = this.state;
+    const {style, hideKnob,  allowShadow, theme, ...others} = this.props;
+    const {deltaY, position, screenReaderEnabled,horizontal} = this.state;
     const isOpen = position === POSITIONS.OPEN;
     const themeObject = Object.assign(this.headerStyleOverride, theme);
 
+    const calendarHeightInterpolated = this.state.calendarHeight.interpolate({
+      inputRange: [0, this.openHeight-this.closedHeight],
+      outputRange: [this.openHeight, this.closedHeight],
+      extrapolate: 'clamp'
+    });
     return (
       <View style={[allowShadow && this.style.containerShadow, style]}>
-        {screenReaderEnabled ?
-          <Calendar
-            testID="calendar"
-            {...others}
-            theme={themeObject}
-            onDayPress={this.onDayPress}
-            markedDates={this.getMarkedDates()}
-            hideExtraDays
-            renderArrow={this.renderArrow}
-          />
-          :
+          
+          <AgendaList  
+  scrollEventThrottle={16}
+      maxHight={this.openHeight}
+  onScroll={Animated.event(
+    [{ nativeEvent: { contentOffset: { y: this.state.calendarHeight } } }],
+    { useNativeDriver: false,   listener: (event) => {
+      const y = event.nativeEvent.contentOffset.y;
+      
+      if ( y <= this.openHeight-this.closedHeight - 40 &&  horizontal==true   )
+   {     this.setState({horizontal:false});  console.log("horizontal:false")}
+        
+        if (
+          y >= this.openHeight-this.closedHeight  - 40 && horizontal==false
+        )
+        {  this.setState({ horizontal: true });console.log("horizontal:true")}
+
+    }
+    
+    }
+  )}
+
+        contentContainerStyle={{marginTop:this.openHeight}}
+        sections={this.props.sections}
+        
+         renderItem={this.props.renderItem}/>
+       
           <Animated.View 
             ref={e => {this.wrapper = e;}}
-            style={{height: deltaY}} 
+            style={{height: calendarHeightInterpolated,position:"absolute"}} 
             
           >
             <CalendarList
@@ -520,11 +543,9 @@ class ExpandableCalendar extends Component {
               renderArrow={this.renderArrow}
               staticHeader
             /> 
-            {horizontal && this.renderWeekCalendar()}
-            {!hideKnob && this.renderKnob()}
-            {!horizontal && this.renderHeader()}
+             {horizontal && this.renderWeekCalendar()}
           </Animated.View> 
-        }
+         
       </View>
     );
   }
